@@ -1,37 +1,62 @@
-$(document).ready(function(){
-
-var $input = $('#input');
-var $submit = $('#submit');
-var apiKey = 'OaIJAqeTeWEd8NXFbeXwn47vPvukP4ze';
-var $imgBody = $('.img-body');
-
-$submit.on('click', function (event) {
-    event.preventDefault();
-    $imgBody.empty();
-    var inputVal = $input.val();
-    getGiphys(inputVal);
-    $input.val('');
-});
-
-function getGiphys(inputVal){
-    $.get('http://api.giphy.com/v1/gifs/search?q=' + inputVal + '&api_key=' + apiKey + '&limit=10')
-        .done(function(data){
-            for (var i = 0; i < 10; i++) {
-                var gifImg = data.data[i].images.downsized.url;
-                createBox(gifImg);
-            }
-            
-        });
-};
-
-function createBox(gifImg){
-    var $newImg = $('<img>');
-        $newImg.attr('src', gifImg);
-        $newImg.addClass('image-box');
+let buttons = ['cats', 'dogs', 'lions'];
 
 
-    $imgBody.append($newImg);
+function loadButtons() {
+    const listButtons = JSON.parse(localStorage.getItem('buttons'));
+
+    buttons = listButtons;
 }
 
 
-});
+function renderButtons() {
+
+    $('.recent-search').empty();
+
+    for (let i = 0; i < buttons.length; i++) {
+        const buttonName = buttons[i];
+
+        const button = `
+        <div class="wrap-buttons">
+        <button class = "btn btn-search" data-name="${buttonName}">${buttonName}</button>
+        <button data-name="${buttonName}"data-index="${i}" class="btn btn-delete fas fa-skull"></button>
+        </div>`;
+
+        $('.recent-search').append(button);
+    }
+
+    localStorage.setItem('buttons', JSON.stringify(buttons));
+}
+
+loadButtons();
+renderButtons();
+
+function removeButton(){
+    const buttonIndex = $(this).attr('data-index');
+
+    buttons.splice(buttonIndex, 1);
+
+    console.log('buttons: ',buttons);
+
+    renderButtons();
+
+    console.log('Button Index:', buttonIndex);
+}
+
+function addButton(value){
+    buttons.push(value);
+
+    renderButtons();
+}
+
+function searchGiphy(event){
+    event.preventDefault();
+
+    const value = $('#search').val();
+    addButton(value);
+
+    console.log('vaule: ', value);
+};
+
+$(document).on('click', '.btn-delete', removeButton);
+
+$('#submit-button').on('click', searchGiphy);

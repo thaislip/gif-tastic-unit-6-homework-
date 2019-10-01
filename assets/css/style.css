@@ -1,6 +1,18 @@
-.image-box{
-    height:100px;
-    width:100px;
-    border:1px solid black;
-    float:left;
+.recent-search{
+    display:flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    margin:25px, 0px;
+}
+
+.wrap-buttons{
+    border: 1px solid slategray;
+    margin-left: .5em;
+    margin-bottom: 1em;
+    border-radius: 1em;
+}
+
+.btn-delete{
+    border-left: 1px solid black;
+    border-radius: 0px;
 }
