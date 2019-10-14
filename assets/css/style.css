@@ -1,36 +1,15 @@
-h1{
-	text-align:center;
-	margin-top:1px;
-	margin-bottom:1px;
+  
+.jumbotron {
+	background-color: steelblue;
+	text-align: center;
+	font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+	border: 5px dotted black;
 	text-shadow: 2px 1px red;
 	font-weight:800;
-}
 
-form{
-	display:flex;
-	justify-content:flex-start;
-	align-items:center;
-}
-
-#clear-results{
-	width:10em;
-}
-
-.recent-search{
-	display:flex;
-	justify-content: flex-start;
-	flex-wrap:wrap;
-	margin:20px 0px;
-}
-
-.wrap-buttons{
-	border:1px solid slategray;
-	margin-left:.5em;
-	margin-bottom:1em;
-	border-radius:1em;
-}
-
-.btn-delete{
-	border-left:1px solid black;
-	border-radius:0;
-}
+  }
+  
+  #movieButtons {
+	text-align: center;
+	font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  }

@@ -1,106 +1,68 @@
-let buttons = ['Star Wars', 'The Matrix', 'The Dark Crystal','Pulp Fuction']
-const api_key = 'OaIJAqeTeWEd8NXFbeXwn47vPvukP4ze';
-const endpoint = 'https://api.giphy.com/v1/gifs/search?api_key=OaIJAqeTeWEd8NXFbeXwn47vPvukP4ze&limit=10';
+var movies = ["Star Wars","Aladdin","Saving Private Ryan","The Goonies","James Bond","Lord of The Rings"];
 
+displayButtons();
 
-function loadButtons(){
-    const listButtons = JSON.parse(localStorage.getItem('buttons'));
+function displayButtons() {
 
-    buttons = listButtons;
+  $("#movieButtons").empty();
+
+  for (var i = 0; i < movies.length; i++) {
+
+    var button = $("<button>");
+    button.addClass("movie");
+    button.attr("data-name", movies[i]);
+    button.text(movies[i]);
+    $("#movieButtons").append(button);
+  }
 }
+$("#add-movie").on("click", function(event){
+  event.preventDefault();
 
-function renderButtons(){
+  var movieName = $("#movie-input").val();
 
-    $('.recent-search').empty();
+  movies.push(movieName);
 
-    for (let i = 0; i < buttons.length; i++){
-        const buttonName = buttons[i];
+  displayButtons();
+})
 
-        const button = `
-        <div class="wrap-buttons">
-            <button
-             class="btn btn-search"
-             data-name="${buttonName}"
-             >${buttonName}</button>
-            <button
-                data-name="${buttonName}"
-                data-index="${i}"
-                class="btn btn-delete fas fa-skull-crossbones"
-            ></button>
-        </div>
-        `;
+$(document).on("click", ".movie", function() {
+	$('#movies').empty();
+	var movie = $(this).attr("data-name");
+	console.log(this);
+	var noSpace = movie.replace(" ", "_");
+	var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + noSpace + "&limit=10&api_key=OaIJAqeTeWEd8NXFbeXwn47vPvukP4ze";
+	console.log(movie);
+	console.log(noSpace);
+	console.log(queryURL);
+	$.ajax({
+		url: queryURL,
+		method: "GET"
+	})
+	.done(function(response) {
+		for (var i = 0; i < 10; i++) {
+			var rating = response.data[i].rating;
+			var img = $("<img>");
+				img.attr({
+					'src': response.data[i].images.fixed_height_still.url,
+					'data-name': 'still',
+					'data-still': response.data[i].images.fixed_height_still.url,
+					'data-animate': response.data[i].images.fixed_height.url,
+					'width': 200,
+					'height': 200
+				});
+		$('#movies').append(img);
+		$('#movies').append("<br>Rated: " + rating + "<br><br>");
+		}
+	});
+});
 
-        $('.recent-search').append(button);
-    }
-
-    localStorage.setItem('buttons', JSON.stringify(buttons));
-
-}
-loadButtons();
-renderButtons();
-
-
-
-
-function removeButton(){
-    const buttonIndex = $(this).attr('data-index');
-
-    buttons.splice(buttonIndex, 1);
-
-    console.log('buttons', buttons)
-    
-    renderButtons();
-  
-    console.log('button-index', buttonIndex);
-}
-
-function addButton(value){
-    buttons.push(value);
-
-    renderButtons();
-}
-
-function renderGiphys(giphys){
-
-    for (let i = 0; i < giphys.length; i ++){
-        const giphy = giphys[i];
-
-        const giphyTemplate =`
-            
-        `;
-    }
-
-}
-
-function fetchGiphy(value){
-    const url = endpoint + '&q=' + value;
-
-    $.ajax({ url })
-        .then(function(response){
-
-            const giphys = response.data;
-
-            renderGiphys();
-            console.log('data', data)
-        })
-        .catch(function(error){
-            console.log('error',error)
-        });
-}
-
-
-
-function searchGiphy(event){
-    event.preventDefault();
-
-    const value = $('#search').val();
-    addButton(value);
-    fetchGiphy(value);
-  
-     console.log('value: ', value);
-}
-
-//events
-$(document).on('click', '.btn-delete', removeButton);
-$('#submit-button').on('click', searchGiphy);
-
+$(document).on("click", 'img', function(){
+	if($(this).attr('data-name') === 'still') {
+		$(this).attr('src', $(this).attr('data-animate'));
+		$(this).attr('data-name', 'animate');
+	}
+	else {
+		$(this).attr('src', $(this).attr('data-still'));
+		$(this).attr('data-name', 'still');
+	}
+});
